@@ -2,12 +2,12 @@
  * @file getDistance.ino
  * @brief Gravity VL53L4CD I2C 模式连续测距（UNO：SDA=A4, SCL=A5）
  * @copyright Copyright (c) 2026 DFRobot Co.Ltd
- * @n 模块拨码：I2C 模式（PC5 高）；地址拨码 0x52（PC6 高）或 0x53（PC6 低）
+ * @n 把拨码拨到 I2C，地址拨码拨到要使用的地址
  */
 #include <Wire.h>
 #include <DFRobot_VL53L4CD.h>
 
-/** 与模块拨码一致：默认 0x52；拨到 0x53 时改为 0x53 */
+/** 与地址拨码一致。拨到 0x53 时把这里改成 0x53 */
 static const uint8_t kModuleI2cAddr = 0x52;
 
 DFRobot_VL53L4CD_I2C tof(&Wire, -1);
