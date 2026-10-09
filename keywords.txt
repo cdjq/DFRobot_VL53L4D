@@ -1,0 +1,4 @@
+DFRobot_VL53L4CD_I2C	KEYWORD1
+InitSensor	KEYWORD2
+getResult	KEYWORD2
+getDistance	KEYWORD3
