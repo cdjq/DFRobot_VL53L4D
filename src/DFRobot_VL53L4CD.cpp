@@ -33,18 +33,20 @@ void DFRobot_VL53L4CD::onInitAddress(uint8_t addr)
   (void)addr;
 }
 
-int DFRobot_VL53L4CD::InitSensor(uint8_t addr)
+int DFRobot_VL53L4CD::sensorInit(void)
 {
   uint16_t id = 0;
 
-  onInitAddress(addr);
-  if (!getSensorId(&id)) {
-    return 0;
-  }
-  if (id != VL53L4CD_MODEL_ID) {
+  if (!getSensorId(&id) || id != VL53L4CD_MODEL_ID) {
     return 0;
   }
   return 1;
+}
+
+int DFRobot_VL53L4CD::InitSensor(uint8_t addr)
+{
+  onInitAddress(addr);
+  return sensorInit();
 }
 
 int DFRobot_VL53L4CD::getVersion(VL53L4CD_Version_t *pVersion)
@@ -166,16 +168,18 @@ int DFRobot_VL53L4CD::getOffset(int16_t *p_offset_mm)
   return 1;
 }
 
-int DFRobot_VL53L4CD::calibrateOffset(int16_t target_mm, uint8_t samples)
+int DFRobot_VL53L4CD::calibrateOffset(int16_t target_mm, int16_t *p_measured_offset_mm,
+                                    int16_t nb_samples)
 {
   int32_t sum = 0;
-  uint8_t got = 0;
-  uint8_t i;
+  int16_t got = 0;
+  int16_t i;
+  int16_t offset;
 
-  if (samples == 0u || setOffset(0) == 0) {
+  if (p_measured_offset_mm == nullptr || nb_samples <= 0 || setOffset(0) == 0) {
     return 0;
   }
-  for (i = 0; i < samples; i++) {
+  for (i = 0; i < nb_samples; i++) {
     VL53L4CD_Result_t result;
 
     delay(50);
@@ -185,10 +189,14 @@ int DFRobot_VL53L4CD::calibrateOffset(int16_t target_mm, uint8_t samples)
     sum += (int32_t)result.distance;
     got++;
   }
-  if (got == 0u) {
+  if (got == 0) {
     return 0;
   }
-  return setOffset((int16_t)(target_mm - (int16_t)(sum / got)));
+  offset = (int16_t)(target_mm - (int16_t)(sum / got));
+  if (setOffset(offset) == 0 || getOffset(p_measured_offset_mm) == 0) {
+    return 0;
+  }
+  return 1;
 }
 
 int DFRobot_VL53L4CD::setSignalThreshold(uint16_t signal_kcps)
@@ -319,7 +327,7 @@ int DFRobot_VL53L4CD_I2C::setI2CAddress(uint8_t addr)
   (void)addr;
   return 0;
 #else
-  if (!writeReg8(VL53L4CD_REG_I2C_ADDR, (uint8_t)(addr >> 1))) {
+  if (addr < 0x08u || addr > 0x77u || !writeReg8(VL53L4CD_REG_I2C_ADDR, addr)) {
     return 0;
   }
   _addr = addr;

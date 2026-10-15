@@ -15,6 +15,7 @@ Gravity VL53L4CD distance sensor over I2C or UART, and Fermion over I2C. The CS3
    * @return 1 型号正确，0 失败
    */
   int InitSensor(uint8_t addr = 0x52);
+  int sensorInit(void);
 
   /**
    * @brief 读取当前测量结果
@@ -25,10 +26,10 @@ Gravity VL53L4CD distance sensor over I2C or UART, and Fermion over I2C. The CS3
 
   /**
    * @brief 用已知距离校准偏移
-   * @n 目标物需稳定。先把偏移清零，再对 samples 次有效测距取平均
+   * @n 目标物需稳定。先把偏移清零，再对 nb_samples 次有效测距取平均
    * @return 1 已写入新偏移，0 失败
    */
-  int calibrateOffset(int16_t target_mm, uint8_t samples);
+  int calibrateOffset(int16_t target_mm, int16_t *p_measured_offset_mm, int16_t nb_samples);
 ```
 
 ## Compatibility

@@ -17,7 +17,7 @@
 #define VL53L4CD_MODEL_ID 0xEBAAu ///< VL53L4CD 器件 ID
 
 #define VL53L4CD_REG_MODEL_ID 0x010Fu       ///< IDENTIFICATION__MODEL_ID
-#define VL53L4CD_REG_I2C_ADDR 0x0001u       ///< I2C_SLAVE__DEVICE_ADDRESS，值为 7 位地址右移 1 位
+#define VL53L4CD_REG_I2C_ADDR 0x0001u       ///< 模块对外 I2C 地址，值为 7 位地址
 #define VL53L4CD_REG_OFFSET 0x001Eu         ///< RANGE_OFFSET_MM，单位为 0.25 mm
 #define VL53L4CD_REG_INNER_OFFSET 0x0020u   ///< INNER_OFFSET_MM
 #define VL53L4CD_REG_OUTER_OFFSET 0x0022u   ///< OUTER_OFFSET_MM
@@ -80,6 +80,14 @@ public:
   int InitSensor(uint8_t addr = 0x52);
 
   /**
+   * @brief 确认传感器已经可以测距
+   * @n 固件上电已经完成 SensorInit 和 StartRanging，这里只核对 MODEL_ID 为 0xEBAA
+   * @n 不再从主机重写一遍 ULD 默认参数
+   * @return 1 型号正确，0 失败
+   */
+  int sensorInit(void);
+
+  /**
    * @brief 读取本库版本，不是传感器固件版本
    * @n major.minor.build.revision 对应当前库 V1.0.0
    * @return 1 成功，0 空指针
@@ -132,11 +140,11 @@ public:
 
   /**
    * @brief 用已知距离校准偏移
-   * @n 目标物需稳定，距离单位毫米。先把偏移清零，再对 samples 次有效测距取平均
-   * @n 新偏移 = 目标距离 - 平均实测。没有一次有效测距则返回 0
+   * @n 目标物需稳定，距离单位毫米。先把偏移清零，再对 nb_samples 次有效测距取平均
+   * @n 新偏移 = 目标距离 - 平均实测，并写入 p_measured_offset_mm。没有一次有效测距则返回 0
    * @return 1 已写入新偏移，0 失败
    */
-  int calibrateOffset(int16_t target_mm, uint8_t samples);
+  int calibrateOffset(int16_t target_mm, int16_t *p_measured_offset_mm, int16_t nb_samples);
 
   /**
    * @brief 设置信号阈值
@@ -238,7 +246,7 @@ public:
 
   /**
    * @brief 修改传感器 I2C 地址
-   * @n 仅 Fermion（编译宏 DFERMION）把 7 位地址右移 1 位写入 0x0001
+   * @n 仅 Fermion（编译宏 DFERMION）把 7 位地址原样写入 0x0001
    * @n Gravity 把地址拨码拨到对应位置，调用返回 0
    * @return 1 已修改，0 拒绝或失败
    */

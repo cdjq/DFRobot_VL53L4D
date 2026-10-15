@@ -17,6 +17,13 @@ Gravity VL53L4CD 测距：I2C 或 UART。Fermion 只使用 I2C。片内寄存器
   int InitSensor(uint8_t addr = 0x52);
 
   /**
+   * @brief 确认传感器已经可以测距
+   * @n 固件上电已经完成初始化，这里只核对 MODEL_ID
+   * @return 1 型号正确，0 失败
+   */
+  int sensorInit(void);
+
+  /**
    * @brief 读取当前测量结果
    * @n 返回 1 只说明读到了结果区；range_status 为 0 才是有效距离
    * @return 1 读成功，0 总线失败
@@ -25,10 +32,10 @@ Gravity VL53L4CD 测距：I2C 或 UART。Fermion 只使用 I2C。片内寄存器
 
   /**
    * @brief 用已知距离校准偏移
-   * @n 目标物需稳定。先把偏移清零，再对 samples 次有效测距取平均
+   * @n 目标物需稳定。先把偏移清零，再对 nb_samples 次有效测距取平均
    * @return 1 已写入新偏移，0 失败
    */
-  int calibrateOffset(int16_t target_mm, uint8_t samples);
+  int calibrateOffset(int16_t target_mm, int16_t *p_measured_offset_mm, int16_t nb_samples);
 ```
 
 ## 兼容性
