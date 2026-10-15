@@ -15,7 +15,7 @@
  * @author wxzed(xiao.wu@dfrobot.com)
  * @version V1.0.0
  * @date 2026-10-09
- * @url https://github.com/cdjq/DFRobot_VL53L4D
+ * @url https://github.com/DFRobot/DFRobot_VL53L4CD
  */
 #include <Wire.h>
 #include <DFRobot_VL53L4CD.h>

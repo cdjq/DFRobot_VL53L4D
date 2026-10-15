@@ -7,7 +7,7 @@
   @author wxzed(xiao.wu@dfrobot.com)
   @version V1.0.0
   @date 2026-10-15
-  @url https://github.com/cdjq/DFRobot_VL53L4D
+  @url https://github.com/DFRobot/DFRobot_VL53L4CD
 '''
 
 import time
