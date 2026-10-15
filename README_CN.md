@@ -4,7 +4,7 @@ Gravity VL53L4CD 测距：I2C 或 UART。Fermion 只使用 I2C。片内寄存器
 
 - Gravity I2C：把拨码拨到 I2C 和要使用的地址。
 - Gravity UART：把拨码拨到 UART。9600 8N1，Modbus 从站 50。依赖 DFRobot_RTU。
-- `setI2CAddress` 只在以 `DFERMION` 编译库时写入。Gravity 把地址拨码拨到对应位置。
+- `setI2CAddress` 只在 Fermion 上生效，新地址存入 Flash。Gravity 调用不生效，返回 0，地址仍按拨码。不需要编译宏。
 
 ## Methods
 

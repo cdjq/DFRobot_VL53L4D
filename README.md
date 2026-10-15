@@ -4,7 +4,7 @@ Gravity VL53L4CD distance sensor over I2C or UART, and Fermion over I2C. The CS3
 
 - Gravity I2C: set the DIP switches to I2C and the address you want.
 - Gravity UART: set the mode DIP switch to UART. 9600 8N1, Modbus unit 50. Depends on DFRobot_RTU.
-- `setI2CAddress` writes only when the library is built with `DFERMION`. Gravity returns failure and keeps the DIP address.
+- `setI2CAddress` changes and saves the address on Fermion only. Gravity ignores it, the call returns 0, and the DIP address stays in use. No build macro is needed.
 
 ## Methods
 

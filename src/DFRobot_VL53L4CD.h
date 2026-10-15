@@ -196,8 +196,8 @@ public:
 
   /**
    * @brief 修改传感器 I2C 地址
-   * @n 仅 Fermion（编译宏 DFERMION）可写 0x0001 并记住新地址
-   * @n Gravity 把地址拨码拨到对应位置。本函数返回 0，不写寄存器
+   * @n 只有 Fermion 会改。Gravity 用拨码选地址，调用不生效
+   * @n 基类和 UART 版直接返回 0
    * @return 1 已修改，0 拒绝或失败
    */
   virtual int setI2CAddress(uint8_t addr);
@@ -246,8 +246,10 @@ public:
 
   /**
    * @brief 修改传感器 I2C 地址
-   * @n 仅 Fermion（编译宏 DFERMION）把 7 位地址原样写入 0x0001
-   * @n Gravity 把地址拨码拨到对应位置，调用返回 0
+   * @n 把 7 位地址原样写入 0x0001，约 50 ms 后用新地址读回 0x0001 确认
+   * @n Fermion 改地址并存入 Flash，掉电保留。Gravity 固件拒绝，读回不一致时返回 0，仍用原地址
+   * @n 新地址和当前地址相同时，读回一致也返回 1
+   * @param addr 7 位地址，0x08 到 0x77
    * @return 1 已修改，0 拒绝或失败
    */
   int setI2CAddress(uint8_t addr);
@@ -268,7 +270,7 @@ private:
 
 /**
  * @class DFRobot_VL53L4CD_UART
- * @brief Gravity UART。仅 Gravity；Fermion 定义 DFERMION 后不提供本类。
+ * @brief Gravity UART。Fermion 没有 UART，不要用本类。
  * @n 模块固定 9600 8N1，从站 50。构造里的波特率参数只为兼容，不会改模块。
  */
 class DFRobot_VL53L4CD_UART : public DFRobot_VL53L4CD {

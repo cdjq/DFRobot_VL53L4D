@@ -323,16 +323,21 @@ void DFRobot_VL53L4CD_I2C::onInitAddress(uint8_t addr)
 
 int DFRobot_VL53L4CD_I2C::setI2CAddress(uint8_t addr)
 {
-#ifndef DFERMION
-  (void)addr;
-  return 0;
-#else
+  uint8_t old_addr = _addr;
+  uint8_t readback = 0;
+
   if (addr < 0x08u || addr > 0x77u || !writeReg8(VL53L4CD_REG_I2C_ADDR, addr)) {
     return 0;
   }
+  /* 模块先应答这笔写，再在主循环里改地址并写 Flash。Gravity 会在那一步拒绝，
+     所以只看写成功不够，要等它处理完再用新地址读回。 */
+  delay(50);
   _addr = addr;
-  return 1;
-#endif
+  if (readReg8(VL53L4CD_REG_I2C_ADDR, &readback) && readback == addr) {
+    return 1;
+  }
+  _addr = old_addr;
+  return 0;
 }
 
 bool DFRobot_VL53L4CD_I2C::writeReg8(uint16_t reg, uint8_t value)

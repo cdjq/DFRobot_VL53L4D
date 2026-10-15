@@ -1,9 +1,9 @@
 /*!
  * @file fermionChangeI2cAddress.ino
  * @brief Fermion 把 7 位 I2C 地址改成 0x53 并读回型号
- * @n 库必须带编译宏 DFERMION，setI2CAddress 才会把地址原样写入 0x0001
- * @n Gravity 用拨码选择 0x52 或 0x53。在 Gravity 上运行会拒绝写入，不要靠本示例改地址
- * @n 本示例使用 Wire 默认引脚，起始地址 0x52
+ * @n 新地址存进模块 Flash，掉电保留。之后要用新地址调用 InitSensor
+ * @n Gravity 用拨码选择 0x52 或 0x53。在 Gravity 上运行不生效，会打印 rejected
+ * @n 本示例使用 Wire 默认引脚，Fermion 出厂地址 0x52
  * @n -----------------------------------------------------------------
  * @n  Board       VCC     GND     SCL     SDA
  * @n  UNO         VCC     GND     A5      A4
