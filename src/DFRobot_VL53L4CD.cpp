@@ -457,7 +457,7 @@ bool DFRobot_VL53L4CD_UART::writeReg16(uint16_t reg, uint16_t value)
 
 bool DFRobot_VL53L4CD_UART::writeReg8(uint16_t reg, uint8_t value)
 {
-  /* 固件按 16 位大端写入，高字节落在该寄存器地址上。 */
+  /* 模块按 16 位大端写入，高字节落在该寄存器地址上。 */
   return writeReg16(reg, (uint16_t)((uint16_t)value << 8));
 }
 

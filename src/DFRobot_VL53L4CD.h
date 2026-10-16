@@ -72,7 +72,7 @@ class DFRobot_VL53L4CD {
 public:
   /**
    * @brief 核对 MODEL_ID
-   * @n CS32 固件上电已完成传感器初始化时，这里只读 0x010F，期望 0xEBAA
+   * @n 上电后模块已开始测距，这里只读 0x010F，期望 0xEBAA
    * @n I2C：addr 为 7 位地址。Gravity 把地址拨码拨到对应位置
    * @n UART：忽略 addr，从站固定 50
    * @return 1 型号正确，0 失败
@@ -81,14 +81,13 @@ public:
 
   /**
    * @brief 确认传感器已经可以测距
-   * @n 固件上电已经完成 SensorInit 和 StartRanging，这里只核对 MODEL_ID 为 0xEBAA
-   * @n 不再从主机重写一遍 ULD 默认参数
+   * @n 上电后模块已开始测距，这里只核对 MODEL_ID 为 0xEBAA
    * @return 1 型号正确，0 失败
    */
   int sensorInit(void);
 
   /**
-   * @brief 读取本库版本，不是传感器固件版本
+   * @brief 读取本库版本，不是模块内部版本
    * @n major.minor.build.revision 对应当前库 V1.0.0
    * @return 1 成功，0 空指针
    */
@@ -103,7 +102,7 @@ public:
 
   /**
    * @brief 开始连续测距
-   * @n 向 0x0087 写 0x21。固件上电已经开始测距时可以不调用
+   * @n 向 0x0087 写 0x21。模块上电后通常已在测距，需要重新开始时再调用
    * @return 1 成功，0 总线失败
    */
   int startRanging(void);
@@ -220,7 +219,7 @@ class DFRobot_VL53L4CD_I2C : public DFRobot_VL53L4CD {
 public:
   /**
    * @brief 绑定 I2C 和可选的主机侧 XSHUT
-   * @n xshut_pin 为 -1 时不操作引脚，模块板载 XSHUT 由 CS32 拉高
+   * @n xshut_pin 为 -1 时不操作引脚，模块默认保持使能
    * @n 传入引脚时，powerOn 拉高、powerOff 拉低
    */
   DFRobot_VL53L4CD_I2C(TwoWire *i2c = &Wire, int xshut_pin = -1);
@@ -247,7 +246,7 @@ public:
   /**
    * @brief 修改传感器 I2C 地址
    * @n 把 7 位地址原样写入 0x0001，约 50 ms 后用新地址读回 0x0001 确认
-   * @n Fermion 改地址并存入 Flash，掉电保留。Gravity 固件拒绝，读回不一致时返回 0，仍用原地址
+   * @n Fermion 改地址并掉电保留。Gravity 不改地址，读回不一致时返回 0，仍用原地址
    * @n 新地址和当前地址相同时，读回一致也返回 1
    * @param addr 7 位地址，0x08 到 0x77
    * @return 1 已修改，0 拒绝或失败

@@ -1,6 +1,6 @@
 # DFRobot_VL53L4CD
 
-Raspberry Pi I2C library for Gravity and Fermion VL53L4CD. UART is not implemented. The onboard CS32 already initializes the sensor and starts ranging.
+Raspberry Pi I2C library for Gravity and Fermion VL53L4CD. UART is not implemented. The module starts ranging after power-up.
 
 - Gravity: set the DIP switches to I2C and match the constructor address (0x52 or 0x53).
 - Fermion: ships at 0x52. `set_i2c_address` changes the address and keeps it after power off. Gravity ignores it.
@@ -31,10 +31,10 @@ Keep `sys.path.append("../../")` in the examples, or place this directory on `PY
 | `begin()` | Open I2C. Drives XSHUT high when a pin was given. |
 | `power_on()` / `power_off()` | Host-side XSHUT. No GPIO action when the pin is -1. |
 | `init_sensor(addr=0x52)` | Store the address and check MODEL_ID 0xEBAA. |
-| `sensor_init()` | Check MODEL_ID. Does not rewrite ULD defaults. |
+| `sensor_init()` | Check that the model id is 0xEBAA. |
 | `get_version()` | Return the library version object. |
 | `get_sensor_id()` | Return the device id, or None. |
-| `start_ranging()` / `stop_ranging()` | Write 0x0087. Firmware already started ranging. |
+| `start_ranging()` / `stop_ranging()` | Write 0x0087. The module is already ranging after power-up. |
 | `get_result()` | Return a result object. `distance` is valid when `range_status == 0`. |
 | `set_offset(offset_mm)` | Offset from -1024 to 1023 mm. |
 | `get_offset()` | Return the current offset, or None. |

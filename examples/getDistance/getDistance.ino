@@ -33,7 +33,7 @@ void setup()
   }
   Serial.println(F("VL53L4CD I2C getDistance"));
 
-  /* 打开主机 I2C。未接主机侧 XSHUT 时，模块由板载 CS32 保持使能。 */
+  /* 打开主机 I2C。未接主机侧 XSHUT 时，模块默认保持使能。 */
   if (!tof.begin()) {
     Serial.println(F("begin failed"));
     while (true) {
@@ -41,7 +41,7 @@ void setup()
     }
   }
 
-  /* 核对 MODEL_ID 为 0xEBAA。固件上电已经完成初始化和连续测距。 */
+  /* 核对 MODEL_ID 为 0xEBAA。模块上电后已经在连续测距。 */
   if (!tof.InitSensor(kModuleI2cAddr)) {
     Serial.println(F("InitSensor failed (check addr / wiring / I2C mode)"));
     while (true) {
@@ -54,7 +54,7 @@ void setup()
   Serial.print(F("Sensor ID: 0x"));
   Serial.println(id, HEX);
 
-  /* CS32 固件上电已 StartRanging，此处可不调用；无固件时可 tof.startRanging() */
+  /* 模块上电后已在测距，此处可不调用。需要重新开始时再 tof.startRanging() */
   Serial.println(F("Ranging..."));
 }
 

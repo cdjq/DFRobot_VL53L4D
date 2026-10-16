@@ -77,7 +77,7 @@ class DFRobot_VL53L4CD_I2C(object):
 
   def __init__(self, bus=1, addr=0x52, xshut_pin=-1):
     '''!
-      @brief Bind an I2C bus. xshut_pin -1 leaves the module XSHUT to the onboard CS32.
+      @brief Bind an I2C bus. xshut_pin -1 leaves the module enabled.
       @param bus I2C bus number, usually 1.
       @param addr 7-bit module address. Gravity must match the address DIP. Fermion ships at 0x52.
       @param xshut_pin BCM pin for a host-side XSHUT, or -1.
@@ -140,7 +140,7 @@ class DFRobot_VL53L4CD_I2C(object):
 
   def sensor_init(self):
     '''!
-      @brief Confirm the sensor can be read. Does not rewrite ULD defaults.
+      @brief Confirm the sensor can be read by checking model id 0xEBAA.
       @return True when MODEL_ID is 0xEBAA.
     '''
     sensor_id = self.get_sensor_id()

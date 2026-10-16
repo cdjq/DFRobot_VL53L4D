@@ -1,6 +1,6 @@
 # DFRobot_VL53L4CD
 
-树莓派通过 I2C 读取 Gravity / Fermion VL53L4CD。本库不实现 UART。模块上的 CS32 已经完成传感器初始化和连续测距。
+树莓派通过 I2C 读取 Gravity / Fermion VL53L4CD。本库不实现 UART。模块上电后已经在连续测距。
 
 - Gravity：拨码拨到 I2C，地址与构造参数一致（0x52 或 0x53）。
 - Fermion：出厂地址 0x52。`set_i2c_address` 改地址，掉电保留。Gravity 调用不生效。
@@ -31,10 +31,10 @@ sudo apt-get install python3-smbus python3-smbus2 python3-rpi.gpio
 | `begin()` | 打开 I2C。给了 XSHUT 引脚时先拉高。 |
 | `power_on()` / `power_off()` | 主机侧 XSHUT。未接线时不操作 GPIO。 |
 | `init_sensor(addr=0x52)` | 记录地址并核对 MODEL_ID 0xEBAA。 |
-| `sensor_init()` | 只核对 MODEL_ID，不重写 ULD 默认参数。 |
+| `sensor_init()` | 只核对型号 0xEBAA。 |
 | `get_version()` | 返回库版本对象。 |
 | `get_sensor_id()` | 返回器件 ID，失败为 None。 |
-| `start_ranging()` / `stop_ranging()` | 写 0x0087。固件上电已开始测距。 |
+| `start_ranging()` / `stop_ranging()` | 写 0x0087。模块上电后已经在测距。 |
 | `get_result()` | 返回结果对象。`range_status == 0` 时 `distance` 有效。 |
 | `set_offset(offset_mm)` | 偏移 -1024..1023 mm。 |
 | `get_offset()` | 返回当前偏移，失败为 None。 |
